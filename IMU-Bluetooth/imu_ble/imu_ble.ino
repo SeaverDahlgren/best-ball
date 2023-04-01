@@ -17,18 +17,20 @@
 
 #include <ArduinoBLE.h>
 
-#include "LSM6DS3.h"
+#include <LSM6DS3.h>
 #include "Wire.h"
 
 BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214"); // Bluetooth® Low Energy LED Service
 
-// Bluetooth® Low Energy LED Switch Characteristic - custom 128-bit UUID, read and writable by central
-BLEByteCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+// BLE Float Characteristic - custom 128-bit UUID, BLERead -> allows reads, BLENotify -> Allows for real-time data streaming
+// For more info: https://github.com/arduino-libraries/ArduinoBLE/blob/master/docs/api.md
+BLEFloatCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
 
-const int ledPin = LED_BUILTIN; // pin to use for the LED
+// Part of Demo
+// const int ledPin = LED_BUILTIN; // pin to use for the LED
 
-//Create a instance of class LSM6DS3
-LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
+// Create a instance of class LSM6DS3
+LSM6DS3 myIMU(I2C_MODE, 0x6A);    // I2C device address 0x6A
 
 float xangle = 0;
 
@@ -36,15 +38,15 @@ void setup() {
   Serial.begin(9600);
   while (!Serial);
   
-  //Call .begin() to configure the IMUs
+  // Call .begin() to configure the IMUs
   if (myIMU.begin() != 0) {
       Serial.println("Device error");
   } else {
       Serial.println("Device OK!");
   }
 
-  // set LED pin to output mode
-  pinMode(ledPin, OUTPUT);
+//  // set LED pin to output mode
+//  pinMode(ledPin, OUTPUT);
 
   // begin initialization
   if (!BLE.begin()) {
@@ -54,7 +56,7 @@ void setup() {
   }
 
   // set advertised local name and service UUID:
-  BLE.setLocalName("LED");
+  BLE.setLocalName("Best Ball IMU");
   BLE.setAdvertisedService(ledService);
 
   // add the characteristic to the service
@@ -63,8 +65,8 @@ void setup() {
   // add service
   BLE.addService(ledService);
 
-  // set the initial value for the characeristic:
-  switchCharacteristic.writeValue("What in the world is going on?");
+  // set the initial value for the characeristic: -> inital transmit value -> 0
+  switchCharacteristic.writeValue(0);
 
   // start advertising
   BLE.advertise();
@@ -72,7 +74,7 @@ void setup() {
   Serial.println("BLE LED Peripheral");
 }
 
-
+// Initialize x gyro value to 0
 float x_gyro = 0;
 void loop() {
   // listen for Bluetooth® Low Energy peripherals to connect:
@@ -90,10 +92,12 @@ void loop() {
       x_gyro = myIMU.readFloatGyroY();
       Serial.println(xangle);
       xangle += .1 * x_gyro;
-      delay(100);
+      delay(1000);
       // if the remote device wrote to the characteristic,
       // use the value to control the LED:
       switchCharacteristic.writeValue(x_gyro);
+      Serial.print("Write Value: ");
+      Serial.println(x_gyro);
 //      if (switchCharacteristic.written()) {
 //        if (switchCharacteristic.value() == 1) {   // any value other than 0
 //          Serial.println("LED on");
