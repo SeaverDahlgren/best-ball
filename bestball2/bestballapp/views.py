@@ -59,3 +59,26 @@ def pair_ball(request):
         return HttpResponse("Ball assigned to player successfully!")
     else:
         return HttpResponse("Invalid Request!")
+
+
+@csrf_exempt
+def set_ball_distance(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        new_dist = request.POST.get("new_dist")
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.distanceFromHole = new_dist
+        ball.save()
+        return HttpResponse("Ball Distance Changed")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def new_ball(request):
+    if request.method == 'POST':
+        color = request.POST.get('color')
+        ball = Ball.objects.create(color=color)
+        return HttpResponse("Created new Ball!")
+    else:
+        return HttpResponse("Invalid Request!")
+
