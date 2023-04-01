@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView #View for the user interface
+from bestball2.schema import schema #Schema we want to query
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', views.home, name='home'),
+    # This URL will provide a user interface that is used to query the database
+    # and interact with the GraphQL API.
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
     path('bestballapp/', include('bestballapp.urls')),
-    # path('select_player/', views.select_player, name='select_player'),
-    # path('player_stats/<int:player_id>/', views.player_stats, name='player_stats'),
-    # path('stats.', display_stats),
 ]
+
 
