@@ -15,7 +15,6 @@ def newgame(request):
             p1 = form.cleaned_data["player1"]
             p2 = form.cleaned_data["player2"]
             p3 = form.cleaned_data["player3"]
-            print("You entered P1:" + p1)
             if p1 == '' and p2 == '' and p3 == '':
                 return render(request, 'newgame.html')
             newSession = Session.objects.create()
@@ -23,10 +22,19 @@ def newgame(request):
             newSession.players.clear()
             players = [p1, p2, p3]
             playList = []
-            for player in players:
+            for ball_id, player in enumerate(players, start=1):
                 newPlay, _ = Player.objects.get_or_create(name=player)
                 playList.append(newPlay)
-                # newSession.players.add(newPlay)
+                ball = get_object_or_404(Ball, pk=ball_id)
+                ball.distanceFromHole = 0
+                try:
+                    oldPlayer = Player.objects.get(currentBall=ball)
+                    oldPlayer.currentBall = None
+                    oldPlayer.save()
+                except:
+                    pass
+                newPlay.currentBall = ball
+                newPlay.save()
             newSession.players.set(playList)
             return redirect(reverse('player_stats', args=(newSession.id,)))
     form = getPlayerInfo()
@@ -54,6 +62,12 @@ def pair_ball(request):
         ball_id = request.POST.get('ball_id')
         player = get_object_or_404(Player, name=player_name)
         ball = get_object_or_404(Ball, pk=ball_id)
+        try:
+            oldPlayer = Player.objects.get(currentBall=ball)
+            oldPlayer.currentBall = None
+            oldPlayer.save()
+        except:
+            pass
         player.currentBall = ball
         player.save()
         return HttpResponse("Ball assigned to player successfully!")
