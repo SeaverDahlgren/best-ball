@@ -37,7 +37,7 @@
   <p>Golf stats for {{ player.name }}:</p>
   <ul>
     <li>Current Ball: {{ player.currentBall }}</li>
-    <li>Strokes: {{ player.putts }}</li>
+    <li>Strokes: {{ player.currentBall.strokes }}</li>
     <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}</li>
     <li>Previous Ball Spin: {{ player.currentBall.lastSpin }}</li>
     <li>Average Ball Speed: 42% (Fake)</li>
