@@ -37,16 +37,16 @@
         text-align: center;
         background-size: 2%;
       }
-    [Ma(1</style>
+    </style>
     <div id="data-container">
         {% for player in players %}
           <h2>{{ player.name }}</h2>
           <p>Golf stats for {{ player.name }}:</p>
           <ul>
-            <li>Current Ball: {{ player.currentBall }}</li>
+            <li>Current Ball: {{ player.currentBall.id }}</li>
             <li>Strokes: {{ player.currentBall.strokes }}</li>
             <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}</li>
-            <li>Previous Ball Spin: {{ player.currentBall.lastSpin }}</li>
+            <li>Current Ball Spin Rate: {{ player.currentBall.currentSpinRate }}</li>
             <li>Average Ball Speed: 42% (Fake)</li>
             <li>Club angle: 90 degrees (Fake)</li>
           </ul>
@@ -70,10 +70,10 @@
                             var playerHTML = '<h2>' + player.name + '</h2>' +
                                 '<p>Golf stats for ' + player.name + ':</p>' +
                                 '<ul>' +
-                                '<li>Current Ball: ' + player.currentBall.strokes + '</li>' +
+                                '<li>Current Ball: ' + player.currentBall.id + '</li>' +
                                 '<li>Strokes: ' + player.currentBall.strokes + '</li>' +
                                 '<li>Distance From Hole: ' + player.currentBall.distanceFromHole + '</li>' +
-                                '<li>Previous Ball Spin: ' + player.currentBall.lastSpin + '</li>' +
+                                '<li>Current Ball Spin Rate: ' + player.currentBall.currentSpinRate + '</li>' +
                                 '</ul>';
 
                             html += playerHTML;

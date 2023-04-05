@@ -106,6 +106,17 @@ def add_stroke(request):
         return HttpResponse("Invalid Request!")
 
 @csrf_exempt
+def reset_stroke(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.strokes = 0
+        ball.save()
+        return HttpResponse("Stroke Count Reset!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
 def set_hole(request):
     if request.method == 'POST':
         ball_id = request.POST.get('ball_id')
@@ -114,6 +125,18 @@ def set_hole(request):
         ball.in_hole = in_hole
         ball.save()
         return HttpResponse("In Hole Changed!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def set_spin(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        spin_rate = request.POST.get('spin_rate')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.currentSpinRate = spin_rate
+        ball.save()
+        return HttpResponse("Set new Spin Rate!")
     else:
         return HttpResponse("Invalid Request!")
 
@@ -128,8 +151,10 @@ def get_players_data(request):
                 'name': player.name,
                 'currentBall': {
                     'strokes': player.currentBall.strokes,
+                    'id': player.currentBall.id,
+                    'strokes': player.currentBall.strokes,
                     'distanceFromHole': player.currentBall.distanceFromHole,
-                    'lastSpin': player.currentBall.lastSpin,
+                    'currentSpinRate': player.currentBall.currentSpinRate,
                     'inHole': player.currentBall.inHole
                 }
             }
