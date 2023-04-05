@@ -127,7 +127,7 @@ def set_hole(request):
         ball_id = request.POST.get('ball_id')
         in_hole = request.POST.get('in_hole')
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.in_hole = in_hole
+        ball.inHole = in_hole
         ball.save()
         return HttpResponse("In Hole Changed!")
     else:
