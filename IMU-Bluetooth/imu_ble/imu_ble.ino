@@ -76,6 +76,9 @@ void setup() {
 
 // Initialize x gyro value to 0
 float x_gyro = 0;
+float y_gyro = 0;
+float z_gyro = 0;
+float magnitude = 0;
 void loop() {
   // listen for Bluetooth® Low Energy peripherals to connect:
   BLEDevice central = BLE.central();
@@ -89,15 +92,20 @@ void loop() {
     // while the central is still connected to peripheral:
     while (central.connected()) {
       Serial.print("X:");
-      x_gyro = myIMU.readFloatGyroY();
-      Serial.println(xangle);
-      xangle += .1 * x_gyro;
-      delay(1000);
+      x_gyro = myIMU.readFloatGyroX();
+      Serial.print("Y:");
+      y_gyro = myIMU.readFloatGyroY();
+      Serial.print("Z:");
+      z_gyro = myIMU.readFloatGyroZ();
+//      Serial.println(xangle);
+//      xangle += .1 * x_gyro;
+//      delay(1000);
       // if the remote device wrote to the characteristic,
       // use the value to control the LED:
-      switchCharacteristic.writeValue(x_gyro);
-      Serial.print("Write Value: ");
-      Serial.println(x_gyro);
+      magnitude = round((sqrt(sq(x_gyro) + sq(y_gyro) + sq(z_gyro)))/6);
+      switchCharacteristic.writeValue(magnitude);
+//      Serial.print("Write Value: ");
+//      Serial.println(x_gyro);
 //      if (switchCharacteristic.written()) {
 //        if (switchCharacteristic.value() == 1) {   // any value other than 0
 //          Serial.println("LED on");
@@ -110,6 +118,6 @@ void loop() {
     }
 
     // when the central disconnects, print it out:
-    Serial.print(F("Disconnected from central: "));
-    Serial.println(central.address());
+//    Serial.print(F("Disconnected from central: "));
+//    Serial.println(central.address());
   }
