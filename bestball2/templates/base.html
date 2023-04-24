@@ -15,11 +15,13 @@
   <meta property="og:description" content="Improve Your Golf Game">
   <meta property="og:image" content="image.jpg">
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
 
 </head>
 
 <body>
+
     <div id='content', name='content'>
         {% block content %}
         {% endblock %}

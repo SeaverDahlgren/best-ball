@@ -1,0 +1,37 @@
+body {
+    /* background-color: rgb(83, 224, 168); */
+    background-image: url("GolfGreen.jpeg");
+}
+body1 {
+    background-color: rgb(83, 224, 168);
+}
+h1 {
+    text-align: center;
+    color: rgb(0, 0, 0);
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 300%;
+    background-image: url("ball.png");
+    background-size: 2.1%;
+
+}
+h2 {
+    color: rgb(0, 0, 0);
+    font-family:'Trebuchet MS';
+    font-size: 150%;
+    background-color: rgba(255, 255, 255, 0.696);
+    text-align: center;
+    /* display: inline-block; */
+}
+p {
+    color: rgb(54, 54, 54);
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 200%;
+    border: 2px solid powderblue;
+    
+    padding: 30px;
+    background-color: rgba(83, 224, 168, 0.569);
+    text-align: center;
+    background-size: 2%;
+    /* display: inline-block; */
+}

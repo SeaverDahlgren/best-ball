@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>New Game</h1> <br> </br>
-<h2>Please enter Player:</h2>
+<h2>Please enter Player name(s):</h2>
 <form method="post" action="/bestballapp/newgame/" class="form-group">
   {% csrf_token %}
   {{form.as_p}}
