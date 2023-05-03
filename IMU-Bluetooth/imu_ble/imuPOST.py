@@ -18,7 +18,11 @@ def add_stroke(ball_id):
         print('POST request successful')
     else:
         # Request failed
-        print(f'POST request failed with status code: {response.status_code}')
+        try:
+            url = 'http://localhost:8765/bestballapp/add_stroke/'
+            requests.post(url, data=data)
+        except:
+            print(f'POST request failed with status code: {response.status_code}')
 
 # def add_stroke(ball_id):
 #     # Specify the URL endpoint to send the POST request to
