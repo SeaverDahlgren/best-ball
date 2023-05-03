@@ -1,8 +1,11 @@
 import simplepyble
 import struct
+import imuPOST
 
-if __name__ == "__main__":
+NUM_CHIPS = 1
+def pair_chips():
     adapters = simplepyble.Adapter.get_adapters()
+    service_uuid, characteristic_uuid = "", ""
 
     if len(adapters) == 0:
         print("No adapters found")
@@ -28,7 +31,7 @@ if __name__ == "__main__":
 
     # Query the user to pick a peripheral
     imu_chips = []
-    for j in range(2):
+    for j in range(NUM_CHIPS):
         print("Please select a peripheral:")
         for i, peripheral in enumerate(peripherals):
             print(f"{i}: {peripheral.identifier()} [{peripheral.address()}]")
@@ -54,14 +57,21 @@ if __name__ == "__main__":
         choice = int(input("Enter choice: "))
         service_uuid, characteristic_uuid = service_characteristic_pair[choice]
         imu_chips.append(peripheral)
+    return imu_chips, service_uuid, characteristic_uuid
 
+def print_notif(data, chip):
+    float_value = struct.unpack('f', data)
+    print("Address %s" % chip.address())
+    print("msg Contents: %.2f" % float_value)
+
+if __name__ == "__main__":
+    imu_chips, service_uuid, characteristic_uuid = pair_chips()
     # Write the content to the characteristic
+    for chip in imu_chips:
+        chip.notify(service_uuid, characteristic_uuid, lambda data: print_notif(data, chip))
+
     while(1):
-        for chip in imu_chips:
-            contents = chip.read(service_uuid, characteristic_uuid)
-            float_value = struct.unpack('f', contents)
-            print("Address %s" % chip.address())
-            print("msg Contents: %.2f" % float_value)
+        pass
 
     for chip in imu_chips:
         chip.disconnect()
