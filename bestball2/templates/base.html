@@ -1,11 +1,14 @@
 <!doctype html>
-
+{% load static %}
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Best Ball</title>
+  {% load static %}
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
   <meta name="description" content="Improve Your Golf Game">
   <meta name="author" content="Seaver Dahlgren">
 
@@ -17,7 +20,7 @@
 
   {% load static %}
   <link rel="stylesheet" href="{% static 'styles.css' %}">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>

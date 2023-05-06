@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -27,10 +27,19 @@ def newgame(request):
             # Clear the players in the session
             newSession.players.clear()
             playList = []
-            for player in players:
+            for ball_id, player in enumerate(players, start=1):
                 newPlay, _ = Player.objects.get_or_create(name=player)
                 playList.append(newPlay)
-                # newSession.players.add(newPlay)
+                ball = get_object_or_404(Ball, pk=ball_id)
+                ball.distanceFromHole = 0
+                try:
+                    oldPlayer = Player.objects.get(currentBall=ball)
+                    oldPlayer.currentBall = None
+                    oldPlayer.save()
+                except:
+                    pass
+                newPlay.currentBall = ball
+                newPlay.save()
             newSession.players.set(playList)
             return redirect(reverse('player_stats', args=(newSession.id,)))
     form = getPlayerInfo()
@@ -43,9 +52,6 @@ def select_player(request):
     return render(request, 'select_player.html', context)
 
 def player_stats(request, id):
-    # player = get_object_or_404(Player, pk=player_id)
-    # stats = Stat.objects.filter(player=player)
-    # context = {'player': player, 'stats': stats}
     session = get_object_or_404(Session, id=id)
     players = session.players.all()
     context = {'session': session, 'players': players}
@@ -58,6 +64,12 @@ def pair_ball(request):
         ball_id = request.POST.get('ball_id')
         player = get_object_or_404(Player, name=player_name)
         ball = get_object_or_404(Ball, pk=ball_id)
+        try:
+            oldPlayer = Player.objects.get(currentBall=ball)
+            oldPlayer.currentBall = None
+            oldPlayer.save()
+        except:
+            pass
         player.currentBall = ball
         player.save()
         return HttpResponse("Ball assigned to player successfully!")
@@ -85,4 +97,73 @@ def new_ball(request):
         return HttpResponse("Created new Ball!")
     else:
         return HttpResponse("Invalid Request!")
+
+
+@csrf_exempt
+def add_stroke(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.strokes += 1
+        ball.save()
+        return HttpResponse("Stroke Incremented!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def reset_stroke(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.strokes = 0
+        ball.save()
+        return HttpResponse("Stroke Count Reset!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def set_hole(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        in_hole = request.POST.get('in_hole')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.in_hole = in_hole
+        ball.save()
+        return HttpResponse("In Hole Changed!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def set_spin(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        spin_rate = request.POST.get('spin_rate')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.currentSpinRate = spin_rate
+        ball.save()
+        return HttpResponse("Set new Spin Rate!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+def get_players_data(request):
+    players = Player.objects.all()  # Retrieve all player objects from the database
+
+    # Prepare the data in a format suitable for JSON serialization
+    data = []
+    for player in players:
+        if player.currentBall is not None:
+            player_data = {
+                'name': player.name,
+                'currentBall': {
+                    'strokes': player.currentBall.strokes,
+                    'id': player.currentBall.id,
+                    'strokes': player.currentBall.strokes,
+                    'distanceFromHole': player.currentBall.distanceFromHole,
+                    'currentSpinRate': player.currentBall.currentSpinRate,
+                    'inHole': player.currentBall.inHole
+                }
+            }
+            data.append(player_data)
+
+    return JsonResponse({'data': data})
 
