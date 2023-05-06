@@ -1,0 +1,33 @@
+<!doctype html>
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Best Ball</title>
+  {% load static %}
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+  <meta name="description" content="Improve Your Golf Game">
+  <meta name="author" content="Seaver Dahlgren">
+
+  <meta property="og:title" content="Best Ball">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.bestball.com/">
+  <meta property="og:description" content="Improve Your Golf Game">
+  <meta property="og:image" content="image.jpg">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <div id='content', name='content'>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

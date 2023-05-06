@@ -1,7 +1,6 @@
 # best-ball
 Capstone Spring 2023
 
-
 ## 3/31 - Test IMU bluetooth
 1. Double tap Chip reset to remove current chip firmware
 2. Upload arduino code to chip.
@@ -20,3 +19,5 @@ This is how to use the library:
 3. run `pip install .`
 
 To use the module in a Python file run: `import simplepyble`
+-- Testing --
+Run curl on this while providing a player name and ball id http://127.0.0.1:8765/bestballapp/pair_ball/

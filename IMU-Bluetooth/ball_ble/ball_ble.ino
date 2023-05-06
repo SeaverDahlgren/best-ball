@@ -24,7 +24,9 @@ BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214"); // Bluetooth® Lo
 
 // BLE Float Characteristic - custom 128-bit UUID, BLERead -> allows reads, BLENotify -> Allows for real-time data streaming
 // For more info: https://github.com/arduino-libraries/ArduinoBLE/blob/master/docs/api.md
-BLEFloatCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+BLEFloatCharacteristic spinCharacteristic("19B10001-0000-537E-4F6C-D104768A1214", BLERead | BLENotify);
+
+BLEFloatCharacteristic accelerationCharacteristic("19B10001-0001-537E-4F6C-D104768A1214", BLERead | BLENotify);
 
 // Part of Demo
 // const int ledPin = LED_BUILTIN; // pin to use for the LED
@@ -60,13 +62,16 @@ void setup() {
   BLE.setAdvertisedService(ledService);
 
   // add the characteristic to the service
-  ledService.addCharacteristic(switchCharacteristic);
+  ledService.addCharacteristic(spinCharacteristic);
+  ledService.addCharacteristic(accelerationCharacteristic);
+  
 
   // add service
   BLE.addService(ledService);
 
   // set the initial value for the characeristic: -> inital transmit value -> 0
-  switchCharacteristic.writeValue(0);
+  spinCharacteristic.writeValue(0);
+  accelerationCharacteristic.writeValue(0);
 
   // start advertising
   BLE.advertise();
@@ -116,10 +121,14 @@ void loop() {
   //      xangle += .1 * x_gyro;
   //      delay(1000);
         
-        switchCharacteristic.writeValue(magnitude);
+        spinCharacteristic.writeValue(magnitude);
       } else if (!isStopped) {
         isStopped = true;
-        switchCharacteristic.writeValue(0);
+        spinCharacteristic.writeValue(0);
+      }
+
+      if (aSum > accelerationThreshold) {
+        accelerationCharacteristic.writeValue(aSum);
       }
     }
   }
