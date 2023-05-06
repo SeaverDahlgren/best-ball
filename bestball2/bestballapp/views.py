@@ -13,15 +13,19 @@ def newgame(request):
         form = getPlayerInfo(request.POST)
         if form.is_valid():
             p1 = form.cleaned_data["player1"]
-            p2 = form.cleaned_data["player2"]
-            p3 = form.cleaned_data["player3"]
+            players = [p1]
+            if form.cleaned_data.get("player2") is not None and form.cleaned_data["player2"] != "":
+                p2 = form.cleaned_data["player2"]
+                players.append(p2)
+            if form.cleaned_data.get("player3") is not None and form.cleaned_data["player3"] != "":
+                p3 = form.cleaned_data["player3"]
+                players.append(p3)
             print("You entered P1:" + p1)
             if p1 == '' and p2 == '' and p3 == '':
                 return render(request, 'newgame.html')
             newSession = Session.objects.create()
             # Clear the players in the session
             newSession.players.clear()
-            players = [p1, p2, p3]
             playList = []
             for player in players:
                 newPlay, _ = Player.objects.get_or_create(name=player)
