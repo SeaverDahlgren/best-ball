@@ -50,6 +50,7 @@
             <li>Strokes: {{ player.currentBall.strokes }}</li>
             <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}cm</li>
             <li>Current Ball Spin Rate: {{ player.currentBall.currentSpinRate }}rpm</li>
+            <li>Club Feedback: {{ player.currentBall.putterState }} </li>
             <li>Average Ball Speed: 42% (Fake)</li>
             <li>Club angle: 90 degrees (Fake)</li>
           </ul>
@@ -79,6 +80,7 @@
                                 '<li>Strokes: ' + player.currentBall.strokes + '</li>' +
                                 '<li>Distance From Hole: ' + player.currentBall.distanceFromHole + 'cm</li>' +
                                 '<li>Current Ball Spin Rate: ' + player.currentBall.currentSpinRate + 'rpm</li>' +
+                                '<li>Club Feedback: ' + player.currentBall.putterState + '</li>' +
                                 '</ul>';
 
                             html += playerHTML;

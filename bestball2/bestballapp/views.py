@@ -143,6 +143,21 @@ def set_hole(request):
         return HttpResponse("Invalid Request!")
 
 @csrf_exempt
+def start_ball(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        ball = get_object_or_404(Ball, pk=ball_id)
+        ball.distanceFromHole = 0
+        ball.currentSpinRate = 0
+        ball.strokes = 0
+        ball.inHole = False
+        ball.putterState = ""
+        ball.save()
+        return HttpResponse("Start Ball Ready!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
 def set_spin(request):
     if request.method == 'POST':
         ball_id = request.POST.get('ball_id')
@@ -152,6 +167,25 @@ def set_spin(request):
             ball.currentSpinRate = spin_rate
             ball.save()
         return HttpResponse("Set new Spin Rate!")
+    else:
+        return HttpResponse("Invalid Request!")
+
+@csrf_exempt
+def set_putter_state(request):
+    if request.method == 'POST':
+        ball_id = request.POST.get('ball_id')
+        club_state = int(request.POST.get('club_state'))
+        ball = get_object_or_404(Ball, pk=ball_id)
+        if club_state == 0:
+            ball.putterState = "Deceleration"
+        elif club_state == 1:
+            ball.putterState = "Acceleration"
+        elif club_state == 2:
+            ball.putterState =  "Constant"
+        else:
+            ball.putterState = ""
+        ball.save()
+        return HttpResponse("Stroke Count Reset!")
     else:
         return HttpResponse("Invalid Request!")
 
@@ -170,7 +204,8 @@ def get_players_data(request):
                     'strokes': player.currentBall.strokes,
                     'distanceFromHole': player.currentBall.distanceFromHole,
                     'currentSpinRate': player.currentBall.currentSpinRate,
-                    'inHole': player.currentBall.inHole
+                    'inHole': player.currentBall.inHole,
+                    'putterState': player.currentBall.putterState
                 }
             }
             data.append(player_data)

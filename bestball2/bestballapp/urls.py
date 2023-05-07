@@ -12,6 +12,8 @@ urlpatterns = [
     path('set_hole/', views.set_hole, name='set_hole'),
     path('set_spin/', views.set_spin, name='set_spin'),
     path('reset_stroke/', views.set_spin, name='reset_stroke'),
+    path('set_putter_state/', views.set_putter_state, name='set_putter_state'),
+    path('start_ball/', views.start_ball, name='start_ball'),
     path('api/players/', views.get_players_data, name='get_players_data'),
     path('admin/', admin.site.urls),
 ]

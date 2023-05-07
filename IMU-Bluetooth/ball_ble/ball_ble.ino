@@ -24,7 +24,9 @@ BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214"); // Bluetooth® Lo
 
 // BLE Float Characteristic - custom 128-bit UUID, BLERead -> allows reads, BLENotify -> Allows for real-time data streaming
 // For more info: https://github.com/arduino-libraries/ArduinoBLE/blob/master/docs/api.md
-BLEFloatCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+BLEFloatCharacteristic spinCharacteristic("19B10001-0000-537E-4F6C-D104768A1214", BLERead | BLENotify);
+
+BLEFloatCharacteristic accelerationCharacteristic("19B10001-0001-537E-4F6C-D104768A1214", BLERead | BLENotify);
 
 // Part of Demo
 // const int ledPin = LED_BUILTIN; // pin to use for the LED
@@ -60,13 +62,16 @@ void setup() {
   BLE.setAdvertisedService(ledService);
 
   // add the characteristic to the service
-  ledService.addCharacteristic(switchCharacteristic);
+  ledService.addCharacteristic(spinCharacteristic);
+  // ledService.addCharacteristic(accelerationCharacteristic);
+  
 
   // add service
   BLE.addService(ledService);
 
   // set the initial value for the characeristic: -> inital transmit value -> 0
-  switchCharacteristic.writeValue(0);
+  spinCharacteristic.writeValue(0);
+  accelerationCharacteristic.writeValue(0);
 
   // start advertising
   BLE.advertise();
@@ -81,6 +86,8 @@ float z_gyro = 0;
 float magnitude = 0;
 float aX, aY, aZ;
 const float accelerationThreshold = 2.5; // threshold of significant in G's
+const float rotationThreshold = 10;
+bool isStopped = true;
 void loop() {
   // listen for Bluetooth® Low Energy peripherals to connect:
   BLEDevice central = BLE.central();
@@ -97,40 +104,28 @@ void loop() {
       aY = myIMU.readFloatAccelY();
       aZ = myIMU.readFloatAccelZ();
 
+      // reset the sample read count
+      x_gyro = myIMU.readFloatGyroX();
+      y_gyro = myIMU.readFloatGyroY();
+      z_gyro = myIMU.readFloatGyroZ();
+
+      magnitude = round((sqrt(sq(x_gyro) + sq(y_gyro) + sq(z_gyro)))/6);
+
       // sum up the absolutes
       float aSum = fabs(aX) + fabs(aY) + fabs(aZ);
   
       // check if it's above the threshold
-      if (aSum >= accelerationThreshold) {
-        // reset the sample read count
-        Serial.print("X:");
-        x_gyro = myIMU.readFloatGyroX();
-        Serial.print("Y:");
-        y_gyro = myIMU.readFloatGyroY();
-        Serial.print("Z:");
-        z_gyro = myIMU.readFloatGyroZ();
+      if (magnitude > rotationThreshold) {
+          isStopped = false;
   //      Serial.println(xangle);
   //      xangle += .1 * x_gyro;
   //      delay(1000);
-        // if the remote device wrote to the characteristic,
-        // use the value to control the LED:
-        magnitude = round((sqrt(sq(x_gyro) + sq(y_gyro) + sq(z_gyro)))/6);
-        switchCharacteristic.writeValue(magnitude);
-      }
-//      Serial.print("Write Value: ");
-//      Serial.println(x_gyro);
-//      if (switchCharacteristic.written()) {
-//        if (switchCharacteristic.value() == 1) {   // any value other than 0
-//          Serial.println("LED on");
-//          digitalWrite(ledPin, HIGH);         // will turn the LED on
-//        } else {                              // a 0 value
-//          Serial.println(F("LED off"));
-//          digitalWrite(ledPin, LOW);          // will turn the LED off
-//        }
+        
+        spinCharacteristic.writeValue(magnitude);
+      } else if (!isStopped) {
+        isStopped = true;
+        spinCharacteristic.writeValue(0);
       }
     }
-
-    // when the central disconnects, print it out:
-//    Serial.print(F("Disconnected from central: "));
-//    Serial.println(central.address());
   }
+}
