@@ -35,6 +35,7 @@ def newgame(request):
                 ball.currentSpinRate = 0
                 ball.strokes = 0
                 ball.inHole = False
+                ball.save()
                 try:
                     oldPlayer = Player.objects.get(currentBall=ball)
                     oldPlayer.currentBall = None
@@ -88,8 +89,9 @@ def set_ball_distance(request):
         ball_id = request.POST.get('ball_id')
         new_dist = float(request.POST.get("new_dist"))
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.distanceFromHole = new_dist//10
-        ball.save()
+        if not ball.inHole:
+            ball.distanceFromHole = new_dist//10
+            ball.save()
         return HttpResponse("Ball Distance Changed")
     else:
         return HttpResponse("Invalid Request!")
@@ -133,6 +135,8 @@ def set_hole(request):
         in_hole = request.POST.get('in_hole')
         ball = get_object_or_404(Ball, pk=ball_id)
         ball.inHole = in_hole
+        if ball.inHole:
+            ball.distanceFromHole = 0
         ball.save()
         return HttpResponse("In Hole Changed!")
     else:
@@ -144,8 +148,9 @@ def set_spin(request):
         ball_id = request.POST.get('ball_id')
         spin_rate = request.POST.get('spin_rate')
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.currentSpinRate = spin_rate
-        ball.save()
+        if not ball.inHole:
+            ball.currentSpinRate = spin_rate
+            ball.save()
         return HttpResponse("Set new Spin Rate!")
     else:
         return HttpResponse("Invalid Request!")

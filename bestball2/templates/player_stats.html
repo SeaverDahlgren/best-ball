@@ -2,6 +2,8 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
     {% load static %}
@@ -38,6 +40,7 @@
         background-size: 2%;
       }
     </style>
+
     <div id="data-container">
         {% for player in players %}
           <h2>{{ player.name }}</h2>
@@ -52,6 +55,8 @@
           </ul>
         {% endfor %}
     </div>
+    <button class = "button-50" onclick="window.location.href = '/bestballapp/newgame/';">Click to Start New Game</button>
+
 
     <script>
         $(document).ready(function() {
