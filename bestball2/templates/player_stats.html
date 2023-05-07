@@ -45,8 +45,8 @@
           <ul>
             <li>Current Ball: {{ player.currentBall.id }}</li>
             <li>Strokes: {{ player.currentBall.strokes }}</li>
-            <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}</li>
-            <li>Current Ball Spin Rate: {{ player.currentBall.currentSpinRate }}</li>
+            <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}cm</li>
+            <li>Current Ball Spin Rate: {{ player.currentBall.currentSpinRate }}rpm</li>
             <li>Average Ball Speed: 42% (Fake)</li>
             <li>Club angle: 90 degrees (Fake)</li>
           </ul>
@@ -72,8 +72,8 @@
                                 '<ul>' +
                                 '<li>Current Ball: ' + player.currentBall.id + '</li>' +
                                 '<li>Strokes: ' + player.currentBall.strokes + '</li>' +
-                                '<li>Distance From Hole: ' + player.currentBall.distanceFromHole + '</li>' +
-                                '<li>Current Ball Spin Rate: ' + player.currentBall.currentSpinRate + '</li>' +
+                                '<li>Distance From Hole: ' + player.currentBall.distanceFromHole + 'cm</li>' +
+                                '<li>Current Ball Spin Rate: ' + player.currentBall.currentSpinRate + 'rpm</li>' +
                                 '</ul>';
 
                             html += playerHTML;

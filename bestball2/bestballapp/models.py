@@ -4,7 +4,7 @@ from django.db import models
 class Ball(models.Model):
     color = models.CharField(max_length=50)
     # Set Default ball distance from hole to 100 arbitrarily
-    distanceFromHole = models.DecimalField(max_digits=8, decimal_places=3, default=100)
+    distanceFromHole = models.IntegerField(default=100)
     currentSpinRate = models.DecimalField(max_digits=8, decimal_places=3, null=True)
     strokes = models.IntegerField(default=0)
     inHole = models.BooleanField(default=False)
