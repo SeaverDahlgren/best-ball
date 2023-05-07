@@ -83,7 +83,7 @@ def set_ball_distance(request):
         ball_id = request.POST.get('ball_id')
         new_dist = request.POST.get("new_dist")
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.distanceFromHole = new_dist
+        ball.distanceFromHole = new_dist//10
         ball.save()
         return HttpResponse("Ball Distance Changed")
     else:
