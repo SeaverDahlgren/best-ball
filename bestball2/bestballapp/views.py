@@ -32,6 +32,9 @@ def newgame(request):
                 playList.append(newPlay)
                 ball = get_object_or_404(Ball, pk=ball_id)
                 ball.distanceFromHole = 0
+                ball.currentSpinRate = 0
+                ball.strokes = 0
+                ball.inHole = False
                 try:
                     oldPlayer = Player.objects.get(currentBall=ball)
                     oldPlayer.currentBall = None
@@ -64,6 +67,8 @@ def pair_ball(request):
         ball_id = request.POST.get('ball_id')
         player = get_object_or_404(Player, name=player_name)
         ball = get_object_or_404(Ball, pk=ball_id)
+        ball.strokes = 0
+        ball.inHole = False
         try:
             oldPlayer = Player.objects.get(currentBall=ball)
             oldPlayer.currentBall = None
@@ -81,7 +86,7 @@ def pair_ball(request):
 def set_ball_distance(request):
     if request.method == 'POST':
         ball_id = request.POST.get('ball_id')
-        new_dist = request.POST.get("new_dist")
+        new_dist = float(request.POST.get("new_dist"))
         ball = get_object_or_404(Ball, pk=ball_id)
         ball.distanceFromHole = new_dist//10
         ball.save()
