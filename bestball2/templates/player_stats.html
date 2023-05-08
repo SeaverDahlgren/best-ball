@@ -51,9 +51,10 @@
             <li>Distance From Hole: {{ player.currentBall.distanceFromHole }}cm</li>
             <li>Current Ball Spin Rate: {{ player.currentBall.currentSpinRate }}rpm</li>
             <li>Club Feedback: {{ player.currentBall.putterState }} </li>
-            <li>Average Ball Speed: 42% (Fake)</li>
-            <li>Club angle: 90 degrees (Fake)</li>
           </ul>
+          {% if player.currentBall.inHole %}
+            <p> Cup made! Final Score: {{ player.currentBall.strokes }}</p>
+          {% endif %}
         {% endfor %}
     </div>
     <button class = "button-50" onclick="window.location.href = '/bestballapp/newgame/';">Click to Start New Game</button>
@@ -82,6 +83,9 @@
                                 '<li>Current Ball Spin Rate: ' + player.currentBall.currentSpinRate + 'rpm</li>' +
                                 '<li>Club Feedback: ' + player.currentBall.putterState + '</li>' +
                                 '</ul>';
+                            if (player.currentBall.inHole) {
+                                playerHTML += '<p> Cup made! Final Score: ' + player.currentBall.strokes + '</p>';
+                            }
 
                             html += playerHTML;
                         }

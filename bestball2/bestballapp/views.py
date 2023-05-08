@@ -115,7 +115,8 @@ def add_stroke(request):
     if request.method == 'POST':
         ball_id = request.POST.get('ball_id')
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.strokes += 1
+        if not ball.inHole:
+            ball.strokes += 1
         ball.save()
         return HttpResponse("Stroke Incremented!")
     else:
@@ -151,7 +152,7 @@ def start_ball(request):
     if request.method == 'POST':
         ball_id = request.POST.get('ball_id')
         ball = get_object_or_404(Ball, pk=ball_id)
-        ball.distanceFromHole = 0
+        ball.distanceFromHole = 213
         ball.currentSpinRate = 0
         ball.strokes = 0
         ball.inHole = False

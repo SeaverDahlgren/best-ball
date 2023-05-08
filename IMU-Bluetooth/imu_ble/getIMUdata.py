@@ -21,7 +21,7 @@ curr_ball_spin[1] = 0
 curr_ball_spin[2] = 0
 putter_state = [0]
 prev_ball_time = [datetime.now()]*4
-ball_stat_count = [0]*3
+ball_stat_count = [0]*4
 STAT_INTERVAL = 20
 NUM_CHIPS = 2
 def pair_chips():
