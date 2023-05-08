@@ -27,6 +27,16 @@ def newgame(request):
             # Clear the players in the session
             newSession.players.clear()
             playList = []
+
+            # Reset Ball owners to None
+            for ball in Ball.objects.all():
+                try:
+                    oldPlayer = Player.objects.get(currentBall=ball)
+                    oldPlayer.currentBall = None
+                    oldPlayer.save()
+                except:
+                    pass
+
             for ball_id, player in enumerate(players, start=1):
                 newPlay, _ = Player.objects.get_or_create(name=player)
                 playList.append(newPlay)
@@ -36,12 +46,6 @@ def newgame(request):
                 ball.strokes = 0
                 ball.inHole = False
                 ball.save()
-                try:
-                    oldPlayer = Player.objects.get(currentBall=ball)
-                    oldPlayer.currentBall = None
-                    oldPlayer.save()
-                except:
-                    pass
                 newPlay.currentBall = ball
                 newPlay.save()
             newSession.players.set(playList)
